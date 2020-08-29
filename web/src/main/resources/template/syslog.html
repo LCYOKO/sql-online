@@ -1,0 +1,156 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+
+<table id="demo" lay-filter="test"></table>
+</body>
+<script type="text/html" id="toolbar">
+    <blockquote class="layui-elem-quote news_search">
+        <div class="layui-inline">
+            <div class="layui-inline">
+                <label class="layui-form-label">开始</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input newsTime" id="start" name="start" lay-verify="date" >
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">结束</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input newsTime" id="end" name="end" lay-verify="date" >
+                </div>
+            </div>
+            <a class="layui-btn search_btn" id="search">查询</a>
+        </div>
+    </blockquote>
+</script>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">查看详细</a>
+</script>
+<script src="/static/layui/layui.js"></script>
+<script>
+    layui.use(['table','form','laydate'], function(){
+        var table = layui.table;
+        var util = layui.util;
+        popForm=layui.form;
+        var  laydate = layui.laydate;
+        var $ = layui.$;
+        //第一个实例
+        var startDate = laydate.render({
+            elem:'#start',
+            format:'yyyy-MM-dd',
+            min:'1999-1-1',
+            max:'2111-1-1',
+            done: function (value, date) {
+                endDate.config.min ={
+                    year:date.year,
+                    month:date.month-1,
+                    date: date.date,
+                };
+            }
+        })
+        var endDate = laydate.render({
+            elem:'#end',
+            format:'yyyy-MM-dd',
+            min:'1999-1-1',
+            max:'2111-1-1',
+            done: function (value, date) {
+                startDate.config.max = {
+                    year: date.year,
+                    month: date.month - 1,
+                    date: date.date,
+                }
+            }
+        })
+
+
+
+
+
+        table.render({
+            elem: '#demo'
+            ,toolbar:"#toolbar"
+            ,url: 'http://localhost:9001/syslog/getAll' //数据接口
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "msg": "", //解析提示文本
+                    "startTime": res.data.startTime,
+                    "endTime": res.data.endTime,
+                    "count": res.data.count, //解析数据长度
+                    "data": res.data.item //解析数据列表
+                };}
+            ,page: true //开启分页
+            ,cols: [
+                [
+                    {field:'id', title: 'id', width:'20%', sort: true, fixed: 'left'}
+                    ,{field:'username', title: '姓名', width:'20%'}
+                    ,{field:'operation',title:'操作',width:'20%'}
+                    ,{field:'ip',title:'IP',width:"20%"}
+                    ,{field:'createTime',title:'时间',width:'30%',templet:function(d){
+                        return util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss");}}
+
+                ]
+            ]
+            ,done: function(res, curr, count){
+
+                if(res.startTime!=null&&res.startTime!=undefined){
+                    $("#start").val(res.startTime);
+                }
+                if(res.endTime!=undefined&&res.endTime!=null)  $("#end").attr({"value":res.endTime});
+
+            }
+
+        });
+
+        $('body').on('click','#search',function(){
+            var endTime=$("#end").val();
+            var startTime=$("#start").val();
+            table.reload('demo',{
+                where:{
+                    endTime:endTime,
+                    startTime:startTime
+                },
+                page:{
+                    curr:1
+                }
+            });
+
+            var startDate = laydate.render({
+                elem:'#start',
+                format:'yyyy-MM-dd',
+                min:'1999-1-1',
+                max:'2111-1-1',
+                done: function (value, date) {
+                    endDate.config.min ={
+                        year:date.year,
+                        month:date.month-1,
+                        date: date.date,
+                    };
+                }
+            })
+            var endDate = laydate.render({
+                elem:'#end',
+                format:'yyyy-MM-dd',
+                min:'1999-1-1',
+                max:'2111-1-1',
+                done: function (value, date) {
+                    startDate.config.max = {
+                        year: date.year,
+                        month: date.month - 1,
+                        date: date.date,
+                    }
+                }
+            })
+
+        });
+    });
+
+    function reload() {
+        window.location.reload();
+    }
+</script>
+</html>

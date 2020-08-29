@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>SQL-ONLINE</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">SQL-ONLINE</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <!--<a href="javascript:;" th:text="${session.admin.username}">-->
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a  id="edit" href="#">修改密码</a></dd>
+                    <dd><a href="http://localhost:9001/admin/logout">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">查询功能</a>
+                    <dl class="layui-nav-child">
+                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">sql查询</a></dd>
+                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">sql题库</a></dd>
+                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">code查询</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">其他功能</a>
+                    <dl class="layui-nav-child">
+                        <dd class= "main_left"><a data-src="toBanner">数据库信息配置</a></dd>
+                        <dd class= "main_left"><a data-src="toLog">日志查询</a></dd>
+                        <dd class= "main_left"><a data-src="toLog">用户权限配置查询</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="main_right">
+            <iframe  frameborder="0" scrolling="yes" style="width: 100%" src="/toHome" id="aa">
+            </iframe>
+        </div>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © JXAU -LCY
+    </div>
+</div>
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery-1.12.4.min.js"></script>
+<script>
+    //JavaScript代码区域
+    layui.use(['element','jquery', 'layer'], function(){
+        var element = layui.element;
+        var $ = layui.$ //重点处
+            ,layer = layui.layer;
+        $(".main_left a").on("click",function(){
+            var address =$(this).attr("data-src");
+            $("#aa").attr("src",address);
+        });
+
+        $("#edit").on("click",function () {
+            console.log(1111);
+            var index = layui.layer.open({
+                title : "修改密码",
+                type : 2,
+                content :['editAdmin' ],
+                success : function(layero, index){
+                    setTimeout(function(){
+                        layui.layer.tips('点击此处返回菜品列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    },500)
+                }
+            })
+            layui.layer.full(index);
+        });
+        //一下代码是根据窗口高度在设置iframe的高度
+        var frame = $("#aa");
+        var frameheight = $(window).height();
+        frame.css("height",frameheight);
+
+    });
+
+
+
+</script>
+</body>
+</html>
