@@ -30,17 +30,19 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">查询功能</a>
                     <dl class="layui-nav-child">
-                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">sql查询</a></dd>
-                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">sql题库</a></dd>
-                        <dd class= "main_left"><a data-src="toFoods" href="javascript:;">code查询</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=query" href="javascript:;">sql查询</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=sql" href="javascript:;">sql题库</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=code" href="javascript:;">code题库</a></dd>
+
                     </dl>
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">其他功能</a>
                     <dl class="layui-nav-child">
-                        <dd class= "main_left"><a data-src="toBanner">数据库信息配置</a></dd>
-                        <dd class= "main_left"><a data-src="toLog">日志查询</a></dd>
-                        <dd class= "main_left"><a data-src="toLog">用户权限配置查询</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=database">数据库信息配置</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=syslog">日志查询</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=role">用户权限配置查询</a></dd>
+                        <dd class= "main_left"><a data-src="toPage?method=user">用户管理</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -58,7 +60,7 @@
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        © JXAU -LCY
+        © SQL-ONLINE
     </div>
 </div>
 <script src="../static/layui/layui.js"></script>

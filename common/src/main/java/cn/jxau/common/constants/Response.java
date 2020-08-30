@@ -1,5 +1,6 @@
 package cn.jxau.common.constants;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class Response {
     private Integer code;
     private String msg;

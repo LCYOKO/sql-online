@@ -3,40 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
-    <script src="/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <script src="../static/layui/layui.js" charset="utf-8"></script>
 </head>
 <body>
 <form class="layui-form" action="" lay-filter="example">
     <div class="layui-form-item">
         <label class="layui-form-label">地址：</label>
         <div class="layui-input-block">
-            <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入l" class="layui-input">
+            <input type="text" required name="url" lay-verify="title" autocomplete="off" placeholder="请输入url" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数据库：</label>
+        <div class="layui-input-block">
+            <input type="text" required name="source" lay-verify="title" autocomplete="off" placeholder="请输入数据库" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">用户名：</label>
         <div class="layui-input-block">
-            <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            <input type="text" required name="username" lay-verify="title" autocomplete="off" placeholder="请输入用户名(PS:尽量别用 root)" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">密码：</label>
         <div class="layui-input-block">
-            <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            <input type="password" required name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">端口：</label>
         <div class="layui-input-inline">
-            <input name="password" required lay-verify="required" placeholder="3306" autocomplete="off" class="layui-input">
+            <input name="port" required lay-verify="required" placeholder="3306" autocomplete="off" number class="layui-input">
         </div>
     </div>
-    <!--<div class="layui-form-item">-->
-        <!--<div class="layui-input-block">-->
-            <!--<button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>-->
-        <!--</div>-->
-    <!--</div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">说明：</label>
+        <div class="layui-input-inline">
+            <input name="info"  lay-verify="required" utocomplete="off" class="layui-textarea" maxlength="120">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="*">立即提交</button>
+        </div>
+    </div>
 </form>
 </body>
+<script>
+    layui.use(['form'], function(){
+        var form=layui.form;
+    form.on('submit(*)', function(data){
+        var pattern = /[^1-9]/g;
+        var $=layui.$;
+        if(!pattern.exec(data.field.port)){
+            layer.msg("端口只能是整数",
+                // 提示的样式
+                {icon: 2, time: 2000,});
+            return false;
+        }
+        console.log()
+       var data={url:data.field.url,
+            source:data.field.source,
+            username:data.field.username,
+            password:data.field.password,
+            port:data.field.port,
+            info:data.field.info
+        };
+         console.log(data);
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8081/web/db/add",
+            data:data,
+            success:function (res) {
+                if(res.code==200){
+                    layer.msg('添加成功！', {icon: 1});
+                    setTimeout(function (args) {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //再执行关闭
+                        parent.layer.close(index);
+                        //关闭父级页面的表格
+                        parent.layui.table.reload('demo');
+                    },2000);
+                }else{
+                    layer.msg(res.msg, {icon: 2});
+                }
+
+            }
+
+        })
+        return false;
+    });
+        });
+</script>
 </html>

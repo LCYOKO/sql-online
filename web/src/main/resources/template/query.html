@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"></script>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/form.js"></script>
+    <script src="../static/js/lay.js"></script>
+    <script src="../static/jquery-1.12.4.min.js"></script>
+</head>
+<style>
+</style>
+<body>
+
+<div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>SQL-ONLINE</legend>
+    </fieldset>
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md3">
+                <div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
+                    <div class="layui-card">
+
+                        <!--数据库-->
+                        <div class="layui-card-body">
+                            <div class="layui-input-inline layui-form" id="schema_refresh" th:fragment="schema_refresh">
+                                <select id="cid" lay-search lay-filter="tables">
+                                    <option value="" >请选择数据库</option>
+                                </select>
+                            </div>
+
+                            <!-- 表 面板-->
+                            <div id="table_refresh" style="overflow:scroll;height: 1000px;background-color: white"
+                                 th:fragment="table_refresh">
+                                <table id="tables" lay-filter="test"></table>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md9">
+                <div class="layui-card">
+                    <div class="layui-card-header">查询</div>
+                    <div class="layui-card-body">
+                        <div id="conversationDiv">
+                            <pre id="code" class="ace_editor" style="height:300px;margin-top: 10px"
+                                 placeholder="请输入sql语句"></pre>
+                        </div>
+                        <hr>
+                        <button style="margin-right: 10px" id="sendSql" onclick="sendSql();" class="layui-btn">分析
+                        </button>
+                        <button style="margin-right: 10px" id="send" onclick="executeSql()" class="layui-btn">查询
+                        </button>
+                        <button style="margin-right: 10px" id="parser" onclick="columnParser()" class="layui-btn">解析
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md9" style="float: right">
+                <div class="layui-card">
+                    <!--<div class="layui-card-header"></div>-->
+                    <div class="layui-card-body">
+                        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this" lay-id="verfiyResult">分析结果</li>
+                                <li lay-id="queryResult">查询结果</li>
+                                <li lay-id="columnParser">解析结果</li>
+                            </ul>
+                            <!--background-color: #040404;-->
+                            <div class="layui-tab-content" style="width: 100%;height: 400px;overflow:scroll">
+                                <div class="layui-tab-item layui-show"
+                                     style="color: white;background-color: #040404;overflow:scroll;height: 400px;padding-left: 5px"
+                                     id="response">
+
+                                </div>
+                                <div class="layui-tab-item" style="overflow:scroll">
+                                    <table id="queryResult" lay-filter="test"></table>
+                                </div>
+                                <div class="layui-tab-item" style="overflow:scroll">
+                                    <table id="columnParser" lay-filter="test1"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+
+    //初始化对象
+    editor = ace.edit("code");
+
+    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+    //    theme = "tomorrow"
+    theme = "xcode";
+    language = "mysql";
+    editor.setTheme("ace/theme/" + theme);
+    editor.session.setMode("ace/mode/" + language);
+
+    //字体大小
+    editor.setFontSize(14);
+
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free")
+
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+
+
+
+    function sendSql() {
+        var sql = editor.getValue();
+        ws.send(sql);
+        console.log(ws);
+    }
+
+    function executeSql() {
+        var sql = editor.getValue();
+        //获取数据库
+        var schema = $('.layui-form-select .layui-this').last().html();
+        if (schema === '' || schema === undefined || schema === null) {
+            alert("请选择数据库");
+            return;
+        }
+        if (sql === '') {
+            alert("请输入sql");
+            return;
+        }
+        ws.send(schema + ":::" + sql);
+    }
+
+    function columnParser() {
+        var sql = editor.getValue();
+        if (sql === '') {
+            alert("请输入sql");
+            return;
+        }
+        ws.send("===" + sql);
+    }
+
+    layui.use(['form', 'table'], function () {
+
+        var form = layui.form;
+        var  table= layui.table;
+
+        var infoOptions= {
+            elem:'tables',
+            cellMinWidths: 80,
+            cols:[
+                [
+                    {field: 'id', title: 'ID', width:'10%',  fixed: 'left'},
+                    ]
+            ],
+            data:[]
+        }
+
+
+
+//检查项目添加到下拉框中
+        $.ajax({
+            url: 'http://localhost:8081/web/db/getAllList',
+            dataType: 'json',
+            type: 'get',
+            success: function (res) {
+                var data=res.data;
+                $.each(data, function (index, item) {
+                    console.log(item)
+                    $('#cid').append(new Option(item.source, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+
+//重新渲染 固定写法
+            }
+        })
+
+
+
+        form.on('select(tables)', function (data) {
+            if(data.val==="") return false;
+            $.ajax({
+                url: 'http://localhost:8081/web/db/tables',
+                dataType: 'json',
+                type: 'get',
+                data:{id:data.val},
+                success: function (res) {
+                    var data=res.data;
+                     $.extend(infoOptions, {data: data});
+                     table.render(infoOptions);
+
+
+//重新渲染 固定写法
+                }
+            })
+
+        });
+    });
+     
+
+
+
+
+</script>

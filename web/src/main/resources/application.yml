@@ -13,3 +13,8 @@ spring:
     cache: false
   mvc:
     static-path-pattern: /static/**
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tc
+    username: root
+    password: 3852159
