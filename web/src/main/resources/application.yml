@@ -15,6 +15,6 @@ spring:
     static-path-pattern: /static/**
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/tc
+    url: jdbc:mysql://localhost:3306/tc  jdbc:mysql://localhost:3306/dc
     username: root
     password: 3852159

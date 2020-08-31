@@ -1,6 +1,7 @@
 package cn.jxau.web.service.impl;
 
-import cn.jxau.web.entity.Db;
+
+import cn.jxau.common.pojo.Db;
 import cn.jxau.web.entity.DbVO;
 import cn.jxau.web.mapper.DbMapper;
 import cn.jxau.web.service.DbService;

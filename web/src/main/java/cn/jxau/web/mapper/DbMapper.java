@@ -1,6 +1,7 @@
 package cn.jxau.web.mapper;
 
-import cn.jxau.web.entity.Db;
+import cn.jxau.common.pojo.Db;
+
 import cn.jxau.web.entity.DbVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

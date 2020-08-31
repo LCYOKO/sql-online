@@ -1,6 +1,7 @@
 package cn.jxau.web.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
