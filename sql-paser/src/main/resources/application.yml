@@ -1,1 +1,17 @@
+server:
+  port: 8991
+spring:
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+  application:
+    name: sql-parse
+dubbo:
+  protocol:
+    name: dubbo
+    port: -1
+  scan:
+    base-packages: cn.jxau.sqlpaser.service
+  registry:
+    address: spring-cloud://localhost
 

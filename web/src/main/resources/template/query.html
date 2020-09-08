@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"></script>
+    <script src="../static/js/ace.js"></script>
     <script src="../static/layui/layui.js"></script>
     <script src="../static/js/form.js"></script>
     <script src="../static/js/lay.js"></script>
@@ -35,7 +35,7 @@
                             <!-- 表 面板-->
                             <div id="table_refresh" style="overflow:scroll;height: 1000px;background-color: white"
                                  th:fragment="table_refresh">
-                                <table id="tables" lay-filter="test"></table>
+                                <table id="demo" lay-filter="test"></table>
                             </div>
                         </div>
                         <hr>
@@ -45,6 +45,7 @@
             <div class="layui-col-md9">
                 <div class="layui-card">
                     <div class="layui-card-header">查询</div>
+                    <div class="layui-card-header" id="showTable">查看表结构</div>
                     <div class="layui-card-body">
                         <div id="conversationDiv">
                             <pre id="code" class="ace_editor" style="height:300px;margin-top: 10px"
@@ -162,16 +163,27 @@
         var form = layui.form;
         var  table= layui.table;
 
-        var infoOptions= {
-            elem:'tables',
+        var tableObj=table.render({
+            elem: '#demo',
+            url:'http://localhost:8081/web/table/getAllTables',
+            where:{id:0},
+            parseData: function(res){ //res 即为原始返回的数据
+                console.log(res.data.data);
+                return {
+                    "code": 0, //解析接口状态
+                    "msg": "", //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };},
             cellMinWidths: 80,
             cols:[
-                [
-                    {field: 'id', title: 'ID', width:'10%',  fixed: 'left'},
-                    ]
+                [    {checkbox: true, width:"20%"},
+                    {field:"TABLE_NAME",width:'80%'}
+                ]
             ],
-            data:[]
-        }
+
+        });
+
 
 
 
@@ -187,29 +199,20 @@
                     $('#cid').append(new Option(item.source, item.id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
-
-//重新渲染 固定写法
             }
         })
-
+        $("#showTable").click(function(){
+            console.log(1111);
+        });
 
 
         form.on('select(tables)', function (data) {
             if(data.val==="") return false;
-            $.ajax({
-                url: 'http://localhost:8081/web/db/tables',
-                dataType: 'json',
-                type: 'get',
-                data:{id:data.val},
-                success: function (res) {
-                    var data=res.data;
-                     $.extend(infoOptions, {data: data});
-                     table.render(infoOptions);
-
-
-//重新渲染 固定写法
+            console.log(data)
+            tableObj.reload({
+                where: {id:data.value}
                 }
-            })
+            );
 
         });
     });

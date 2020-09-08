@@ -10,4 +10,10 @@ public class Common {
 
     public static final String FAIL_MSG="失败";
     public static final int FAIL_CODE=401;
+
+
+    public static final int QUERY_ERROR=5001;
+    public static final String QUERY_ERROR_MSG="查询失败";
+    public static final int CONNECTION_ERROR=5002;
+    public static final String CONNECTION_ERROR_MSG="获取连接失败";
 }

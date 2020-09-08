@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: sql
+    name: sql-web
   thymeleaf:
     prefix: classpath:/template/
     suffix: .html
@@ -15,6 +15,17 @@ spring:
     static-path-pattern: /static/**
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/tc  jdbc:mysql://localhost:3306/dc
+    url: jdbc:mysql://localhost:3306/tc
     username: root
     password: 3852159
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+dubbo:
+  registry:
+    address: spring-cloud://localhost
+  cloud:
+    subscribed-services: sql-parse
+  consumer:
+    check: false
+

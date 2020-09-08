@@ -4,7 +4,8 @@ package cn.jxau.web.controller;
 
 import cn.jxau.common.constants.Common;
 import cn.jxau.common.constants.Response;
-import cn.jxau.web.entity.Db;
+
+import cn.jxau.common.pojo.Db;
 import cn.jxau.web.service.DbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
